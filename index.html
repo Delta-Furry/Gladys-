@@ -82,16 +82,17 @@ var cuboA = crearCubo({ x: 0, y: 5, z: -5 }, 0xff0000);  // Rojo
 var cuboB = crearCubo({ x: 30, y: 5, z: 10 }, 0x0000ff); // Azul
 var cuboC = crearCubo({ x: -30, y: 5, z: 15 }, 0xff8000); // Naranja
 // Nuevos cubos (10) al lado izquierdo (X negativo) y diferentes Z,Y
-var cuboD = crearCubo({ x: -10, y: 5, z: 0 }, 0x00ff00);   // Verde
-var cuboE = crearCubo({ x: -15, y: 5, z: 10 }, 0xff00ff);  // Magenta
-var cuboF = crearCubo({ x: -20, y: 5, z: 5 }, 0x00ffff);   // Cyan
-var cuboG = crearCubo({ x: -25, y: 5, z: 20 }, 0xffff00);  // Amarillo
-var cuboH = crearCubo({ x: -30, y: 5, z: 25 }, 0x800080);  // Púrpura
-var cuboI = crearCubo({ x: -35, y: 5, z: 30 }, 0x008080);  // Teal
-var cuboJ = crearCubo({ x: -40, y: 5, z: 35 }, 0x808000);  // Oliva
-var cuboK = crearCubo({ x: -45, y: 5, z: 40 }, 0xffa500);  // Naranja
-var cuboL = crearCubo({ x: -50, y: 5, z: 45 }, 0x000080);  // Azul Oscuro
-var cuboM = crearCubo({ x: -55, y: 5, z: 50 }, 0x800000);  // Marrón
+var cuboD = crearCubo({ x: -30, y: 5, z: -10 }, 0x00ff00);
+var cuboE = crearCubo({ x: -60, y: 10, z: 0 }, 0xff00ff);
+var cuboF = crearCubo({ x: -90, y: 5, z: 20 }, 0x00ffff);
+var cuboG = crearCubo({ x: -120, y: 15, z: 10 }, 0xffff00);
+var cuboH = crearCubo({ x: -150, y: 5, z: 40 }, 0x800080);
+var cuboI = crearCubo({ x: -180, y: 10, z: 20 }, 0x008080);
+var cuboJ = crearCubo({ x: -210, y: 5, z: 50 }, 0x808000);
+var cuboK = crearCubo({ x: -240, y: 15, z: 30 }, 0xffa500);
+var cuboL = crearCubo({ x: -270, y: 5, z: 60 }, 0x000080);
+var cuboM = crearCubo({ x: -300, y: 10, z: 40 }, 0x800000);
+cubos.push(cuboD, cuboE, cuboF, cuboG, cuboH, cuboI, cuboJ, cuboK, cuboL, cuboM);
 
 
 // Importante: ya que cuboC se mueve a (0,0,-5) cuando clickeas en cuboC, cerramos el ciclo para que M lleve al punto inicial.
@@ -124,17 +125,16 @@ destinos[cuboA.id] = { x: 30, y: 0, z: 10 };
 destinos[cuboB.id] = { x: -30, y: 0, z: 15 };
 destinos[cuboC.id] = { x: 0, y: 0, z: -5 };
 // Añadimos los destinos para que cada cubo lleve al siguiente, sin if
-destinos[cuboD.id] = { x: -15, y: 0, z: 10 };  // D -> E
-destinos[cuboE.id] = { x: -20, y: 0, z: 5 };   // E -> F
-destinos[cuboF.id] = { x: -25, y: 0, z: 20 };  // F -> G
-destinos[cuboG.id] = { x: -30, y: 0, z: 25 };  // G -> H
-destinos[cuboH.id] = { x: -35, y: 0, z: 30 };  // H -> I
-destinos[cuboI.id] = { x: -40, y: 0, z: 35 };  // I -> J
-destinos[cuboJ.id] = { x: -45, y: 0, z: 40 };  // J -> K
-destinos[cuboK.id] = { x: -50, y: 0, z: 45 };  // K -> L
-destinos[cuboL.id] = { x: -55, y: 0, z: 50 };  // L -> M
-destinos[cuboM.id] = { x: 0, y: 0, z: -5 };    // M -> Regresa al punto inicial (cuboC destino)
-
+destinos[cuboD.id] = { x: -60, y: 5, z: 0 };
+destinos[cuboE.id] = { x: -90, y: 5, z: 20 };
+destinos[cuboF.id] = { x: -120, y: 10, z: 10 };
+destinos[cuboG.id] = { x: -150, y: 5, z: 40 };
+destinos[cuboH.id] = { x: -180, y: 10, z: 20 };
+destinos[cuboI.id] = { x: -210, y: 5, z: 50 };
+destinos[cuboJ.id] = { x: -240, y: 10, z: 30 };
+destinos[cuboK.id] = { x: -270, y: 5, z: 60 };
+destinos[cuboL.id] = { x: -300, y: 5, z: 40 };
+destinos[cuboM.id] = { x: 0, y: 0, z: -5 };  
 function moverSegunCubo(hitCubo) {
   var destino = destinos[hitCubo.id];
   destino && moverA(destino.x, destino.y, destino.z);
