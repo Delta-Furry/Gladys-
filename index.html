@@ -22,10 +22,9 @@
 
   <div id="boton">
     Da clic en + para iniciar VR
-    <p>Recorrido en el mar ¡DISFRUTA2!</p>
+    <p>Recorrido en el mar ¡DISFRUTA!</p>
     <p>(  ) pulsa Esc para salir</p>
   </div>
-
   <canvas id="myCanvas"></canvas>
 
   <script type="importmap">
@@ -47,104 +46,108 @@
     import ESC03 from "./js/Mauricio_PREP.js";
     import ESC04 from "./js/Lyn_PREP.js";
 
-    // Renderer + VRButton
+    // 1) Renderer + VRButton
     const canvas   = document.getElementById('myCanvas');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(innerWidth, innerHeight);
     renderer.xr.enabled = true;
-    renderer.xr.setReferenceSpaceType('local');
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(VRButton.createButton(renderer));
 
-    // Scene & Camera
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 4, 40);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+    // 2) Scene
+    const scene = new THREE.Scene();
+    scene.add(new THREE.AmbientLight(0xffffff, .5));
 
-    // Tus escenarios
-    scene.add( ESC01({ x:0,   y:0,  z:0   }) );
-    scene.add( ESC02({ x:0,   y:10, z:-200}) );
-    scene.add( ESC03({ x:-200,y:10, z:-200}) );
-    scene.add( ESC04({ x:-200,y:10, z:0   }) );
+    // 3) “Player” group que contendrá la cámara
+    const player = new THREE.Group();
+    scene.add(player);
 
-    // — Cubos rojo y azul teletransportadores —
-    const cubeA = new THREE.Mesh(
-      new THREE.BoxGeometry(4,4,4),
-      new THREE.MeshLambertMaterial({ color: 0xff0000, opacity:0.8, transparent:true })
-    );
-    cubeA.position.set(0, 12, -5);
-    scene.add(cubeA);
+    // 4) Cámara dentro de player
+    const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 1000);
+    camera.position.set(0, 4, 0);
+    player.add(camera);
 
-    const cubeB = new THREE.Mesh(
-      new THREE.BoxGeometry(4,4,4),
-      new THREE.MeshLambertMaterial({ color: 0x0000ff, opacity:0.8, transparent:true })
-    );
-    cubeB.position.set(30, 12, 10);
-    scene.add(cubeB);
+    // 5) Añade tus escenarios
+    scene.add( ESC01({ x:0,   y:0,  z:0    }) );
+    scene.add( ESC02({ x:0,   y:10, z:-200 }) );
+    scene.add( ESC03({ x:-200,y:10, z:-200 }) );
+    scene.add( ESC04({ x:-200,y:10, z:0    }) );
 
-    // Raycaster para click/mouse y controller
+    // 6) Crea dos cubos (rojo y azul)
+    const cubes = [];
+    function makeCube(pos, color) {
+      const m = new THREE.Mesh(
+        new THREE.BoxGeometry(4,4,4),
+        new THREE.MeshLambertMaterial({ color, opacity:0.8, transparent:true })
+      );
+      m.position.set(pos.x, pos.y, pos.z);
+      scene.add(m);
+      cubes.push(m);
+      return m;
+    }
+    const cubeA = makeCube({ x:0,   y:12, z:-5 }, 0xff0000);
+    const cubeB = makeCube({ x:30,  y:12, z:10 },  0x0000ff);
+
+    // 7) Raycaster para mouse y controlador
     const raycaster = new THREE.Raycaster();
     const mouse     = new THREE.Vector2();
     const tempMat   = new THREE.Matrix4();
 
-    // Mover cámara suavemente
-    function tweenCamera(toPos) {
-      const from = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+    // Utilidad para teletransportar el grupo player
+    function teleportTo(position) {
+      const from = { x: player.position.x, y: player.position.y, z: player.position.z };
       new TWEEN.Tween(from)
-        .to(toPos, 800)
-        .onUpdate(() => camera.position.set(from.x, from.y, from.z))
+        .to({ x: position.x, y: position.y, z: position.z }, 800)
+        .onUpdate(() => player.position.set(from.x, from.y, from.z))
         .start();
     }
 
-    // Handler para click mouse (no-VR)
+    // 8) Click del mouse (modo monovista)
     window.addEventListener('click', e => {
-      mouse.x = (e.clientX / window.innerWidth ) * 2 - 1;
-      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouse.x = (e.clientX/innerWidth)*2 -1;
+      mouse.y = -(e.clientY/innerHeight)*2 +1;
       raycaster.setFromCamera(mouse, camera);
-      const hit = raycaster.intersectObjects([cubeA, cubeB], false)[0];
+      const hit = raycaster.intersectObjects(cubes, false)[0];
       if (!hit) return;
       const dest = (hit.object === cubeA) ? cubeB.position : cubeA.position;
-      tweenCamera(dest);
+      teleportTo(dest);
     });
 
-    // Handler para controlador VR (select)
+    // 9) Controlador VR (“select”)
     const controller = renderer.xr.getController(0);
     controller.addEventListener('select', () => {
-      // Ray from controller
       tempMat.identity().extractRotation(controller.matrixWorld);
       raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
       raycaster.ray.direction.set(0,0,-1).applyMatrix4(tempMat);
-      const hit = raycaster.intersectObjects([cubeA, cubeB], false)[0];
+      const hit = raycaster.intersectObjects(cubes, false)[0];
       if (!hit) return;
       const dest = (hit.object === cubeA) ? cubeB.position : cubeA.position;
-      tweenCamera(dest);
+      teleportTo(dest);
     });
     scene.add(controller);
 
-    // Crosshair
-    const crossGeo = new THREE.BoxGeometry(.0075,.05,.075);
+    // 10) Crosshair (opcional)
+    const crossGeo = new THREE.BoxGeometry(0.0075,0.05,0.075);
     const crossMat = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
     const c1 = new THREE.Mesh(crossGeo, crossMat);
-    const c2 = new THREE.Mesh(new THREE.BoxGeometry(.05,.0075,.075), crossMat);
+    const c2 = new THREE.Mesh(new THREE.BoxGeometry(0.05,0.0075,0.075), crossMat);
     c1.position.set(0,0,-1); c2.position.set(0,0,-1);
     camera.add(c1, c2);
-    scene.add(camera);
 
-    // Resize
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth/window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // Ocultar botón
+    // 11) Ocultar botón de inicio
     document.getElementById('boton').onclick = () => {
       document.getElementById('boton').style.display = 'none';
     };
 
-    // Render loop
+    // 12) Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth/innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    // 13) Render loop
     function render() {
       TWEEN.update();
       renderer.render(scene, camera);
