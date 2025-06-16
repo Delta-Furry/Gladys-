@@ -77,30 +77,27 @@ function crearCubo(posicion, color) {
   cubos.push(cubo);
   return cubo;
 }
-// 🧱 CUBOS A - J (Altura 5, más cerca del origen)
-var cuboA = crearCubo({ x: 0, y: 5, z: -50 }, 0xff0000);
-var cuboB = crearCubo({ x: 50, y: 5, z: -30 }, 0x0000ff);
-var cuboC = crearCubo({ x: 80, y: 5, z: 0 }, 0xff8000);
-var cuboD = crearCubo({ x: 50, y: 5, z: 30 }, 0x00ff00);
-var cuboE = crearCubo({ x: 0, y: 5, z: 50 }, 0xff00ff);
-var cuboF = crearCubo({ x: -50, y: 5, z: 30 }, 0x00ffff);
-var cuboG = crearCubo({ x: -80, y: 5, z: 0 }, 0xffff00);
-var cuboH = crearCubo({ x: -50, y: 5, z: -30 }, 0x800080);
-var cuboI = crearCubo({ x: -25, y: 5, z: -70 }, 0x008080);
-var cuboJ = crearCubo({ x: 25, y: 5, z: -70 }, 0x808000);
+var cuboA = crearCubo({ x: -80, y: 5, z: 0 }, 0xff0000);    // Izquierda
+var cuboB = crearCubo({ x: -60, y: 5, z: 60 }, 0x0000ff);   // Izq-Frente
+var cuboC = crearCubo({ x: 0, y: 5, z: 80 }, 0xff8000);     // Frente
+var cuboD = crearCubo({ x: 60, y: 5, z: 60 }, 0x00ff00);    // Der-Frente
+var cuboE = crearCubo({ x: 80, y: 5, z: 0 }, 0xff00ff);     // Derecha
+var cuboF = crearCubo({ x: 60, y: 5, z: -60 }, 0x00ffff);   // Der-Atrás
+var cuboG = crearCubo({ x: 0, y: 5, z: -80 }, 0xffff00);    // Atrás
+var cuboH = crearCubo({ x: -60, y: 5, z: -60 }, 0x800080);  // Izq-Atrás
+var cuboI = crearCubo({ x: -60, y: 15, z: 60 }, 0x008080);  // Nivel alto - Izq-Frente
+var cuboJ = crearCubo({ x: 0, y: 15, z: 80 }, 0x808000);    // Nivel alto - Frente
+var cuboK = crearCubo({ x: 60, y: 15, z: 60 }, 0xffa500);   // Nivel alto - Der-Frente
+var cuboL = crearCubo({ x: 80, y: 15, z: 0 }, 0x000080);    // Nivel alto - Derecha
+var cuboM = crearCubo({ x: 60, y: 15, z: -60 }, 0x800000);  // Nivel alto - Der-Atrás
+var cuboN = crearCubo({ x: 0, y: 15, z: -80 }, 0x1abc9c);   // Nivel alto - Atrás
+var cuboO = crearCubo({ x: -60, y: 15, z: -60 }, 0x2ecc71); // Nivel alto - Izq-Atrás
+var cuboP = crearCubo({ x: -80, y: 15, z: 0 }, 0x3498db);   // Nivel alto - Izquierda
+var cuboQ = crearCubo({ x: 0, y: 25, z: 0 }, 0x9b59b6);     // Arriba centro
+var cuboR = crearCubo({ x: 0, y: -5, z: 0 }, 0xf1c40f);     // Abajo centro
+var cuboS = crearCubo({ x: -100, y: 5, z: 100 }, 0xe67e22); // Extremo Izq-Frente
+var cuboT = crearCubo({ x: 100, y: 5, z: -100 }, 0xe74c3c); // Extremo Der-Atrás
 
-// 🧱 CUBOS K - T (Altura 10, hacia el SUR más separados)
-
-var cuboK = crearCubo({ x: -25, y: 10, z: -120 }, 0xffa500);
-var cuboL = crearCubo({ x: 25, y: 10, z: -120 }, 0x000080);
-var cuboM = crearCubo({ x: -50, y: 10, z: -160 }, 0x800000);
-var cuboN = crearCubo({ x: 50, y: 10, z: -160 }, 0x1abc9c);
-var cuboO = crearCubo({ x: -75, y: 10, z: -200 }, 0x2ecc71);
-var cuboP = crearCubo({ x: 75, y: 10, z: -200 }, 0x3498db);
-var cuboQ = crearCubo({ x: -100, y: 10, z: -240 }, 0x9b59b6);
-var cuboR = crearCubo({ x: 100, y: 10, z: -240 }, 0xf1c40f);
-var cuboS = crearCubo({ x: -125, y: 10, z: -280 }, 0xe67e22);
-var cuboT = crearCubo({ x: 125, y: 10, z: -280 }, 0xe74c3c);
 cubos.push(
   cuboA, cuboB, cuboC, cuboD, cuboE,
   cuboF, cuboG, cuboH, cuboI, cuboJ,
@@ -135,27 +132,26 @@ function moverA(x, y, z) {
 // Mapeo de cubo a destino para evitar if
 var destinos = {};
 // Definir destinos conectados (teleport "atrás" de cada cubo)
-destinos[cuboA.id] = { x: 0, y: 0, z: -80 };
-destinos[cuboB.id] = { x: 80, y: 0, z: -40 };
-destinos[cuboC.id] = { x: 110, y: 0, z: 0 };
-destinos[cuboD.id] = { x: 80, y: 0, z: 60 };
-destinos[cuboE.id] = { x: 0, y: 0, z: 80 };
-destinos[cuboF.id] = { x: -80, y: 0, z: 60 };
-destinos[cuboG.id] = { x: -110, y: 0, z: 0 };
-destinos[cuboH.id] = { x: -80, y: 0, z: -40 };
-destinos[cuboI.id] = { x: -50, y: 0, z: -100 };
-destinos[cuboJ.id] = { x: 50, y: 0, z: -100 };
-
-destinos[cuboK.id] = { x: -25, y: 0, z: -150 };
-destinos[cuboL.id] = { x: 25, y: 0, z: -150 };
-destinos[cuboM.id] = { x: -50, y: 0, z: -190 };
-destinos[cuboN.id] = { x: 50, y: 0, z: -190 };
-destinos[cuboO.id] = { x: -75, y: 0, z: -230 };
-destinos[cuboP.id] = { x: 75, y: 0, z: -230 };
-destinos[cuboQ.id] = { x: -100, y: 0, z: -270 };
-destinos[cuboR.id] = { x: 100, y: 0, z: -270 };
-destinos[cuboS.id] = { x: -125, y: 0, z: -310 };
-destinos[cuboT.id] = { x: 125, y: 0, z: -310 };
+destinos[cuboA.id] = { x: -100, y: 0, z: 0 };
+destinos[cuboB.id] = { x: -80, y: 0, z: 80 };
+destinos[cuboC.id] = { x: 0, y: 0, z: 100 };
+destinos[cuboD.id] = { x: 80, y: 0, z: 80 };
+destinos[cuboE.id] = { x: 100, y: 0, z: 0 };
+destinos[cuboF.id] = { x: 80, y: 0, z: -80 };
+destinos[cuboG.id] = { x: 0, y: 0, z: -100 };
+destinos[cuboH.id] = { x: -80, y: 0, z: -80 };
+destinos[cuboI.id] = { x: -80, y: 10, z: 80 };
+destinos[cuboJ.id] = { x: 0, y: 10, z: 100 };
+destinos[cuboK.id] = { x: 80, y: 10, z: 80 };
+destinos[cuboL.id] = { x: 100, y: 10, z: 0 };
+destinos[cuboM.id] = { x: 80, y: 10, z: -80 };
+destinos[cuboN.id] = { x: 0, y: 10, z: -100 };
+destinos[cuboO.id] = { x: -80, y: 10, z: -80 };
+destinos[cuboP.id] = { x: -100, y: 10, z: 0 };
+destinos[cuboQ.id] = { x: 0, y: 20, z: -20 };
+destinos[cuboR.id] = { x: 0, y: -10, z: 20 };
+destinos[cuboS.id] = { x: -120, y: 0, z: 120 };
+destinos[cuboT.id] = { x: 120, y: 0, z: -120 };
 function moverSegunCubo(hitCubo) {
   var destino = destinos[hitCubo.id];
   destino && moverA(destino.x, destino.y, destino.z);
