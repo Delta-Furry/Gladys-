@@ -132,26 +132,27 @@ function moverA(x, y, z) {
 // Mapeo de cubo a destino para evitar if
 var destinos = {};
 // Definir destinos conectados (teleport "atrás" de cada cubo)
-destinos[cuboA.id] = { x: -100, y: 0, z: 0 };
-destinos[cuboB.id] = { x: -80, y: 0, z: 80 };
-destinos[cuboC.id] = { x: 0, y: 0, z: 100 };
-destinos[cuboD.id] = { x: 80, y: 0, z: 80 };
-destinos[cuboE.id] = { x: 100, y: 0, z: 0 };
-destinos[cuboF.id] = { x: 80, y: 0, z: -80 };
-destinos[cuboG.id] = { x: 0, y: 0, z: -100 };
-destinos[cuboH.id] = { x: -80, y: 0, z: -80 };
-destinos[cuboI.id] = { x: -80, y: 10, z: 80 };
-destinos[cuboJ.id] = { x: 0, y: 10, z: 100 };
-destinos[cuboK.id] = { x: 80, y: 10, z: 80 };
-destinos[cuboL.id] = { x: 100, y: 10, z: 0 };
-destinos[cuboM.id] = { x: 80, y: 10, z: -80 };
-destinos[cuboN.id] = { x: 0, y: 10, z: -100 };
-destinos[cuboO.id] = { x: -80, y: 10, z: -80 };
-destinos[cuboP.id] = { x: -100, y: 10, z: 0 };
-destinos[cuboQ.id] = { x: 0, y: 20, z: -20 };
+destinos[cuboA.id] = { x: -100, y: 5, z: 0 };
+destinos[cuboB.id] = { x: -80, y: 5, z: 80 };
+destinos[cuboC.id] = { x: 0, y: 5, z: 100 };
+destinos[cuboD.id] = { x: 80, y: 5, z: 80 };
+destinos[cuboE.id] = { x: 100, y: 5, z: 0 };
+destinos[cuboF.id] = { x: 80, y: 5, z: -80 };
+destinos[cuboG.id] = { x: 0, y: 5, z: -100 };
+destinos[cuboH.id] = { x: -80, y: 5, z: -80 };
+destinos[cuboI.id] = { x: -80, y: 15, z: 80 };
+destinos[cuboJ.id] = { x: 0, y: 15, z: 100 };
+destinos[cuboK.id] = { x: 80, y: 15, z: 80 };
+destinos[cuboL.id] = { x: 100, y: 15, z: 0 };
+destinos[cuboM.id] = { x: 80, y: 15, z: -80 };
+destinos[cuboN.id] = { x: 0, y: 15, z: -100 };
+destinos[cuboO.id] = { x: -80, y: 15, z: -80 };
+destinos[cuboP.id] = { x: -100, y: 15, z: 0 };
+destinos[cuboQ.id] = { x: 0, y: 25, z: -20 };
 destinos[cuboR.id] = { x: 0, y: -10, z: 20 };
-destinos[cuboS.id] = { x: -120, y: 0, z: 120 };
-destinos[cuboT.id] = { x: 120, y: 0, z: -120 };
+destinos[cuboS.id] = { x: -120, y: 5, z: 120 };
+destinos[cuboT.id] = { x: 120, y: 5, z: -120 };
+
 function moverSegunCubo(hitCubo) {
   var destino = destinos[hitCubo.id];
   destino && moverA(destino.x, destino.y, destino.z);
