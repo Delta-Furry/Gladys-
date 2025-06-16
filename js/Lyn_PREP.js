@@ -284,7 +284,7 @@ var geometry10 = new THREE.BoxGeometry(8,8,8);
 var materials=[];
 materials.push( new THREE.MeshPhongMaterial({
 color: 0x90abed,
-map:texture.load("./assets/b.jpg"),
+map:texture.load("./b.jpg"),
 transparent:true,
 opacity:1
  }));
@@ -292,7 +292,7 @@ opacity:1
 
 materials.push( new THREE.MeshPhongMaterial({
 color: 0x90abed,
-map:texture.load("./assets/b.jpg"),
+map:texture.load("./b.jpg"),
 transparent:true,
 opacity:1
 }));
@@ -300,7 +300,7 @@ opacity:1
    
 materials.push( new THREE.MeshPhongMaterial({
 color: 0x90aed,
-map:texture.load("./assets/b.jpg"),
+map:texture.load("./b.jpg"),
 transparent:true,
 opacity:1
 
@@ -308,14 +308,14 @@ opacity:1
   
 materials.push( new THREE.MeshPhongMaterial({
 color: 0x90ab,
-map:texture.load("./assets/b.jpg"),
+map:texture.load("./b.jpg"),
 transparent:true,
 opacity:1
 
    }));
    materials.push( new THREE.MeshPhongMaterial({
 color: 0x90abe,
-map:texture.load("./assets/b.jpg"),
+map:texture.load("./b.jpg"),
 transparent:true,
 opacity:1
 
@@ -323,7 +323,7 @@ opacity:1
 
    materials.push( new THREE.MeshPhongMaterial({
 color: 0x0ab,
-map:texture.load("./assets/b.jpg"),
+map:texture.load("./b.jpg"),
 transparent:true,
 opacity:1
 
