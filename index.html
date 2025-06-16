@@ -80,32 +80,27 @@ function crearCubo(posicion, color) {
 }
 // Crear cubos
 // Cubos del mapa 3 (SO) — el que estás usando como centro (0,0,0)
-// Crear cubos (4 por mapa)
-var cubo1 = crearCubo({ x: -200, y: 5, z: -200 }, 0xff0000); // Mapa 2 - Esquina
-var cubo2 = crearCubo({ x: -100, y: 5, z: -200 }, 0xff8000); // Mapa 2
-var cubo3 = crearCubo({ x: -100, y: 5, z: -100 }, 0xffff00); // Mapa 2
-var cubo4 = crearCubo({ x: -200, y: 5, z: -100 }, 0x00ff00); // Mapa 2
+// Cubo central para empezar el recorrido
+var cuboCentro = crearCubo({ x: 0, y: 5, z: 0 }, 0xffff00, "🟨 CUBO CENTRAL");
 
-var cubo5 = crearCubo({ x: 100, y: 5, z: -200 }, 0x0000ff);  // Mapa 1
-var cubo6 = crearCubo({ x: 200, y: 5, z: -200 }, 0x00ffff);  // Mapa 1
-var cubo7 = crearCubo({ x: 200, y: 5, z: -100 }, 0xff00ff);  // Mapa 1
-var cubo8 = crearCubo({ x: 100, y: 5, z: -100 }, 0x800080);  // Mapa 1
-
-var cubo9  = crearCubo({ x: -200, y: 5, z: 100 }, 0x008000); // Mapa 3
-var cubo10 = crearCubo({ x: -100, y: 5, z: 100 }, 0x804000); // Mapa 3
-var cubo11 = crearCubo({ x: -100, y: 5, z: 200 }, 0x808000); // Mapa 3
-var cubo12 = crearCubo({ x: -200, y: 5, z: 200 }, 0x999999); // Mapa 3
-
-var cubo13 = crearCubo({ x: 100, y: 5, z: 100 }, 0x3399ff);  // Mapa 4
-var cubo14 = crearCubo({ x: 200, y: 5, z: 100 }, 0x9966cc);  // Mapa 4
-var cubo15 = crearCubo({ x: 200, y: 5, z: 200 }, 0xffcc00);  // Mapa 4
-var cubo16 = crearCubo({ x: 100, y: 5, z: 200 }, 0x993333);  // Mapa 4
+// Reubicados y ordenados por color raro (más cercanos a la cruz del centro)
+var cuboAzulVerdoso = crearCubo({ x: -50, y: 5, z: -50 }, 0x00cccc, "💙 Azul verdoso");
+var cuboFiusha = crearCubo({ x: 50, y: 5, z: -50 }, 0xff66cc, "🌸 Fiusha");
+var cuboAmarilloCafe = crearCubo({ x: -50, y: 5, z: 50 }, 0xcc9900, "🍂 Amarillo-café");
+var cuboGris = crearCubo({ x: 50, y: 5, z: 50 }, 0xaaaaaa, "⚪ Gris");
+var cuboMorado = crearCubo({ x: -100, y: 5, z: 0 }, 0x6600cc, "🟣 Morado");
+var cuboNaranjaCafe = crearCubo({ x: 100, y: 5, z: 0 }, 0xcc6600, "🍊 Naranja-café");
+var cuboRojoVino = crearCubo({ x: 0, y: 5, z: 100 }, 0x800000, "🍷 Rojo vino");
 
 cubos.push(
-  cubo1, cubo2, cubo3, cubo4,
-  cubo5, cubo6, cubo7, cubo8,
-  cubo9, cubo10, cubo11, cubo12,
-  cubo13, cubo14, cubo15, cubo16
+  cuboCentro,
+  cuboAzulVerdoso,
+  cuboFiusha,
+  cuboAmarilloCafe,
+  cuboGris,
+  cuboMorado,
+  cuboNaranjaCafe,
+  cuboRojoVino
 );
 
 // Importante: ya que cuboC se mueve a (0,0,-5) cuando clickeas en cuboC, cerramos el ciclo para que M lleve al punto inicial.
@@ -136,26 +131,15 @@ function moverA(x, y, z) {
 var destinos = {};
 // Destinos para teleport
 
-// 📌 Destinos (uno tras otro, en orden de recorrido)
-destinos[cubo1.id] = { x: -100, y: 5, z: -200 };
-destinos[cubo2.id] = { x: -100, y: 5, z: -100 };
-destinos[cubo3.id] = { x: -200, y: 5, z: -100 };
-destinos[cubo4.id] = { x: 100, y: 5, z: -200 };
-
-destinos[cubo5.id] = { x: 200, y: 5, z: -200 };
-destinos[cubo6.id] = { x: 200, y: 5, z: -100 };
-destinos[cubo7.id] = { x: 100, y: 5, z: -100 };
-destinos[cubo8.id] = { x: -200, y: 5, z: 100 };
-
-destinos[cubo9.id]  = { x: -100, y: 5, z: 100 };
-destinos[cubo10.id] = { x: -100, y: 5, z: 200 };
-destinos[cubo11.id] = { x: -200, y: 5, z: 200 };
-destinos[cubo12.id] = { x: 100, y: 5, z: 100 };
-
-destinos[cubo13.id] = { x: 200, y: 5, z: 100 };
-destinos[cubo14.id] = { x: 200, y: 5, z: 200 };
-destinos[cubo15.id] = { x: 100, y: 5, z: 200 };
-destinos[cubo16.id] = { x: -200, y: 5, z: -200 }; // vuelta al inicio
+// Destinos para teleport (ciclo completo)
+destinos[cuboCentro.id] = { x: -50, y: 5, z: -50 };         // Azul Verdoso
+destinos[cuboAzulVerdoso.id] = { x: 50, y: 5, z: -50 };     // Fiusha
+destinos[cuboFiusha.id] = { x: -50, y: 5, z: 50 };          // Amarillo café
+destinos[cuboAmarilloCafe.id] = { x: 50, y: 5, z: 50 };     // Gris
+destinos[cuboGris.id] = { x: -100, y: 5, z: 0 };           // Morado
+destinos[cuboMorado.id] = { x: 100, y: 5, z: 0 };          // Naranja café
+destinos[cuboNaranjaCafe.id] = { x: 0, y: 5, z: 100 };     // Rojo vino
+destinos[cuboRojoVino.id] = { x: 0, y: 5, z: 0 };          // Regresa al centro
 function moverSegunCubo(hitCubo) {
   var destino = destinos[hitCubo.id];
   destino && moverA(destino.x, destino.y, destino.z);
