@@ -1,50 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>PIRATAS VR</title>
-<link rel="icon" type="image/jpg" href="icongame.jpg"/>
-<style>
-  body {
-    margin: 0;
-    overflow: hidden;
-    background-color: #85929E;
-    color: white;
-    font-family: Arial, sans-serif;
-  }
-  #boton {
-    background-color: white;
-    color: black;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 40px;
-    cursor: pointer;
-    z-index: 10;
-  }
-  #boton p {
-    font-size: 20px;
-    margin-top: 10px;
-  }
-  canvas {
-    display: block;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>PIRATAS VR</title>
+  <link rel="icon" type="image/jpg" href="icongame.jpg"/>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #85929E;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    #boton {
+      background-color: white;
+      color: black;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    #boton p {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+    canvas {
+      display: block;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
 
 <div id="boton">
   Da clic en + para iniciar VR
-  <p>Recorrido en el mar ! DISFRUT1A</p>
+  <p>Recorrido en el mar ! DISFRUTA</p>
   <p>(  ) pulsa Esc para salir</p>
 </div>
 
@@ -79,86 +79,100 @@
   document.body.appendChild(VRButton.createButton(renderer));
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 4, 40);
 
-  const light1 = new THREE.AmbientLight(0xffffff, 0.8);
+  const light1 = new THREE.AmbientLight(0xffffff, 1);
   scene.add(light1);
 
+  // Escenarios
   scene.add(ESC01({x:0, y:0, z:0}));
   scene.add(ESC02({x:0, y:10, z:-200}));
   scene.add(ESC03({x:-200, y:10, z:-200}));
   scene.add(ESC04({x:-200, y:10, z:0}));
 
-  // --- NUEVO: Cubos teleportadores ---
+  // Cruceta (retícula)
+  const crossColor = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+  const line1 = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.05, 0.01), crossColor);
+  const line2 = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.005, 0.01), crossColor);
+  line1.position.z = -1;
+  line2.position.z = -1;
+  camera.add(line1, line2);
+  scene.add(camera);
+
+  // Teleport Cubos
   const teleportTargets = [
-    {
-      position: new THREE.Vector3(0, 4, -10),
-      coords: { x: -100, y: 4, z: -100 }
-    },
-    {
-      position: new THREE.Vector3(-100, 4, -100),
-      coords: { x: 0, y: 4, z: 40 }
-    }
+    { pos: new THREE.Vector3(0, 4, -10), target: new THREE.Vector3(-100, 4, -100) },
+    { pos: new THREE.Vector3(-100, 4, -100), target: new THREE.Vector3(0, 4, 40) }
   ];
 
-  teleportTargets.forEach(target => {
+  const teleportCubes = [];
+
+  teleportTargets.forEach(({ pos, target }) => {
     const geo = new THREE.BoxGeometry(5, 5, 5);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const mat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
     const cube = new THREE.Mesh(geo, mat);
-    cube.position.copy(target.position);
-    cube.userData.teleportTo = target.coords;
+    cube.position.copy(pos);
+    cube.userData.target = target;
+
+    // Añadir anillo flotante decorativo
+    const ringGeo = new THREE.TorusGeometry(3, 0.2, 8, 32);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 3;
+    cube.add(ring);
+
     scene.add(cube);
+    teleportCubes.push(cube);
   });
 
-  // Raycaster para detectar la vista
+  // Raycaster
   const raycaster = new THREE.Raycaster();
   const tempMatrix = new THREE.Matrix4();
   let lookingAt = null;
-  let lookingStartTime = 0;
+  let lookStartTime = 0;
 
-  // --- CRUCETA RETÍCULA ---
-  const materialx = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-  const cross1 = new THREE.Mesh(new THREE.BoxGeometry(0.0075, 0.05, 0.01), materialx);
-  const cross2 = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.0075, 0.01), materialx);
-  cross1.position.z = -1; // delante de la cámara
-  cross2.position.z = -1;
-  camera.add(cross1, cross2);
-  scene.add(camera);
+  // Click manual para VR o navegador normal
+  window.addEventListener('click', () => {
+    if (lookingAt && lookingAt.userData.target) {
+      const destino = lookingAt.userData.target;
+      camera.position.set(destino.x, destino.y, destino.z);
+      lookingAt = null;
+    }
+  });
 
+  // Botón de entrada
+  document.getElementById('boton').addEventListener('click', () => {
+    document.getElementById('boton').style.display = 'none';
+  });
+
+  // Resize
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  const boton = document.getElementById('boton');
-  boton.addEventListener('click', () => {
-    boton.style.display = 'none';
-  });
-
-  // --- LOOP PRINCIPAL ---
-  function render() {
+  // Loop principal
+  function animate() {
+    // Ray desde la cámara hacia el frente
     tempMatrix.identity().extractRotation(camera.matrixWorld);
     raycaster.ray.origin.setFromMatrixPosition(camera.matrixWorld);
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
 
-    const intersects = raycaster.intersectObjects(scene.children, true);
+    const intersects = raycaster.intersectObjects(teleportCubes, true);
 
     if (intersects.length > 0) {
-      const obj = intersects[0].object;
-      if (obj.userData.teleportTo) {
+      const obj = intersects[0].object.parent || intersects[0].object;
+      if (obj.userData.target) {
         if (lookingAt !== obj) {
           lookingAt = obj;
-          lookingStartTime = performance.now();
+          lookStartTime = performance.now();
         } else {
           const now = performance.now();
-          if (now - lookingStartTime > 2000) {
-            camera.position.set(
-              obj.userData.teleportTo.x,
-              obj.userData.teleportTo.y,
-              obj.userData.teleportTo.z
-            );
+          if (now - lookStartTime > 2000) {
+            camera.position.copy(obj.userData.target);
             lookingAt = null;
           }
         }
@@ -170,7 +184,7 @@
     renderer.render(scene, camera);
   }
 
-  renderer.setAnimationLoop(render);
+  renderer.setAnimationLoop(animate);
 </script>
 
 </body>
