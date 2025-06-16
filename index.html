@@ -42,23 +42,23 @@
 </head>
 <body>
 
-  <!-- Div inicial para activar VR -->
+  <!-- Botón inicial para activar VR -->
   <div id="boton">
     Da clic en + para iniciar VR
-    <p>Recorrido en el mar ! DISFRUTA</p>
+    <p>Recorrido en el mar ¡DISFRUTA!</p>
     <p>(  ) pulsa Esc para salir</p>
   </div>
 
-  <!-- Canvas para WebGL -->
+  <!-- Canvas WebGL -->
   <canvas id="myCanvas"></canvas>
 
   <script type="importmap">
   {
     "imports": {
-      "three":              "./js/three.module.js",
-      "three/VRButton":     "./js/VRButton.js",
-      "three/interactive":  "./js/three.interactive.js",
-      "tween":              "./js/tween.module.min.js"
+      "three":             "./js/three.module.js",
+      "three/VRButton":    "./js/VRButton.js",
+      "three/interactive": "./js/three.interactive.js",
+      "tween":             "./js/tween.module.min.js"
     }
   }
   </script>
@@ -97,21 +97,21 @@
     scene.add( ESC03({x:-200,y:10, z:-200}) );
     scene.add( ESC04({x:-200,y:10, z:0  }) );
 
-    // ——— nuevo 1: cubo interactivo ———
-    // 1) Crea el manager
+    // ——— nuevo 1: cubo interactivo cerca del origen ———
     const interactionManager = new InteractionManager(renderer, camera, renderer.domElement);
 
-    // 2) Función de ejemplo: un cubo que teletransporta la cámara
     (function(){
-      const geo = new THREE.BoxGeometry(6,6,6);
-      const mat = new THREE.MeshLambertMaterial({ color: 0xff8000, opacity:0.8, transparent:true });
+      const geo  = new THREE.BoxGeometry(4,4,4);
+      const mat  = new THREE.MeshLambertMaterial({ color: 0xff8000, opacity:0.8, transparent:true });
       const cube = new THREE.Mesh(geo, mat);
-      cube.position.set(  0,  3,  20 );      // <— posición del cubo
+
+      // posición justo delante del origen (donde te pone al entrar en VR)
+      cube.position.set(0, 1, -2);
       cube.castShadow = true;
+
       scene.add(cube);
       interactionManager.add(cube);
 
-      // Eventos de interacción
       cube.addEventListener('mouseover', () => {
         cube.material.opacity = 1;
         document.body.style.cursor = 'pointer';
@@ -121,12 +121,12 @@
         document.body.style.cursor = 'default';
       });
       cube.addEventListener('click', () => {
-        // Animar la cámara hacia este destino:
+        // mueve la cámara de vuelta a (0,4,40)
         const from = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-        const to   = { x:  0, y:  4, z:  40 };  // <— destino al que te mueve
+        const to   = { x: 0, y: 4, z: 40 };
         new TWEEN.Tween(from)
           .to(to, 800)
-          .onUpdate(() => camera.position.set(from.x, from.y, from.z))
+          .onUpdate(()=> camera.position.set(from.x, from.y, from.z))
           .start();
       });
     })();
@@ -141,8 +141,8 @@
     camera.add(mx1, mx2);
     scene.add(camera);
 
-    // Resize
-    window.addEventListener('resize', ()=>{
+    // Redimensionar
+    window.addEventListener('resize', () => {
       camera.aspect = innerWidth/innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(innerWidth, innerHeight);
@@ -154,7 +154,7 @@
     };
 
     // Render loop
-    function render(){
+    function render() {
       TWEEN.update();
       interactionManager.update();
       renderer.render(scene, camera);
