@@ -77,14 +77,40 @@ function crearCubo(posicion, color) {
   cubos.push(cubo);
   return cubo;
 }
-var cuboCentro = crearCubo({ x: 0, y: 5, z: 0 }, 0xff0000);           // Centro (inicio)
-var cuboNE = crearCubo({ x: 100, y: 5, z: -100 }, 0x0000ff);          // Noreste
-var cuboNO = crearCubo({ x: -100, y: 5, z: -100 }, 0x00ff00);         // Noroeste
-var cuboSE = crearCubo({ x: 100, y: 5, z: 100 }, 0xff00ff);           // Sureste
-var cuboSO = crearCubo({ x: -100, y: 5, z: 100 }, 0xffff00);          // Suroeste
+// --- Mapa NE (mapa 1) ---
+var cuboNE_centro = crearCubo({ x: 100, y: 5, z: -100 }, 0xff0000);      // Centro
+var cuboNE_NE = crearCubo({ x: 200, y: 5, z: -200 }, 0x0000ff);          // Noreste
+var cuboNE_NO = crearCubo({ x: 0, y: 5, z: -200 }, 0x00ff00);            // Noroeste
+var cuboNE_SE = crearCubo({ x: 200, y: 5, z: 0 }, 0xff00ff);             // Sureste
+var cuboNE_SO = crearCubo({ x: 0, y: 5, z: 0 }, 0xffff00);               // Suroeste
 
-cubos.push(cuboCentro, cuboNE, cuboNO, cuboSE, cuboSO);
+cubos.push(cuboNE_centro, cuboNE_NE, cuboNE_NO, cuboNE_SE, cuboNE_SO);
+// --- Mapa NO (mapa 2) ---
+var cuboNO_centro = crearCubo({ x: -100, y: 5, z: -100 }, 0x0099ff);     // Centro
+var cuboNO_NE = crearCubo({ x: 0, y: 5, z: -200 }, 0x5500ff);            // Noreste
+var cuboNO_NO = crearCubo({ x: -200, y: 5, z: -200 }, 0x00ffaa);         // Noroeste
+var cuboNO_SE = crearCubo({ x: 0, y: 5, z: 0 }, 0xaa00ff);               // Sureste
+var cuboNO_SO = crearCubo({ x: -200, y: 5, z: 0 }, 0xffaa00);            // Suroeste
 
+cubos.push(cuboNO_centro, cuboNO_NE, cuboNO_NO, cuboNO_SE, cuboNO_SO);
+  // --- Mapa SE (mapa 4) ---
+var cuboSE_centro = crearCubo({ x: 100, y: 5, z: 100 }, 0xff6600);       // Centro
+var cuboSE_NE = crearCubo({ x: 200, y: 5, z: 0 }, 0x0066ff);             // Noreste
+var cuboSE_NO = crearCubo({ x: 0, y: 5, z: 0 }, 0x66ff00);               // Noroeste
+var cuboSE_SE = crearCubo({ x: 200, y: 5, z: 200 }, 0xff00aa);           // Sureste
+var cuboSE_SO = crearCubo({ x: 0, y: 5, z: 200 }, 0xffff66);             // Suroeste
+
+cubos.push(cuboSE_centro, cuboSE_NE, cuboSE_NO, cuboSE_SE, cuboSE_SO);
+
+// --- Mapa SO (mapa 3) ---
+var cuboSO_centro = crearCubo({ x: -100, y: 5, z: 100 }, 0x66ff66);       // Centro
+var cuboSO_NE = crearCubo({ x: 0, y: 5, z: 0 }, 0x6666ff);               // Noreste
+var cuboSO_NO = crearCubo({ x: -200, y: 5, z: 0 }, 0xff6666);            // Noroeste
+var cuboSO_SE = crearCubo({ x: 0, y: 5, z: 200 }, 0xff66ff);             // Sureste
+var cuboSO_SO = crearCubo({ x: -200, y: 5, z: 200 }, 0x66ffff);          // Suroeste
+
+cubos.push(cuboSO_centro, cuboSO_NE, cuboSO_NO, cuboSO_SE, cuboSO_SO);
+  
 
 // Importante: ya que cuboC se mueve a (0,0,-5) cuando clickeas en cuboC, cerramos el ciclo para que M lleve al punto inicial.
 
@@ -112,12 +138,26 @@ function moverA(x, y, z) {
 
 // Mapeo de cubo a destino para evitar if
 var destinos = {};
-// Definir destinos conectados (teleport "atrás" de cada cubo)
-destinos[cuboCentro.id] = { x: -100, y: 5, z: 100 };   // Desde el centro te manda a la esquina SO
-destinos[cuboNE.id] = { x: 0, y: 5, z: 0 };            // Desde noreste al centro
-destinos[cuboNO.id] = { x: 0, y: 5, z: 0 };            // Desde noroeste al centro
-destinos[cuboSE.id] = { x: 0, y: 5, z: 0 };            // Desde sureste al centro
-destinos[cuboSO.id] = { x: 0, y: 5, z: 0 };
+destinos[cuboNE_centro.id] = { x: 0, y: 5, z: 0 };           // Centro NE a centro NO
+destinos[cuboNE_NE.id] = { x: 300, y: 5, z: -300 };          // Noreste NE a más noreste (fuera del mapa actual)
+destinos[cuboNE_NO.id] = { x: 100, y: 5, z: -100 };          // Noroeste NE a centro NE
+destinos[cuboNE_SE.id] = { x: 200, y: 5, z: 100 };           // Sureste NE a sureste de mapa SE
+destinos[cuboNE_SO.id] = { x: 100, y: 5, z: 0 };    
+  destinos[cuboNO_centro.id] = { x: -100, y: 5, z: 100 };         // Centro NO a centro SO
+destinos[cuboNO_NE.id] = { x: 100, y: 5, z: 0 };                // Noreste NO a suroeste NE
+destinos[cuboNO_NO.id] = { x: -300, y: 5, z: -300 };            // Noroeste NO a más noroeste
+destinos[cuboNO_SE.id] = { x: 0, y: 5, z: 0 };                  // Sureste NO a suroeste NE
+destinos[cuboNO_SO.id] = { x: -100, y: 5, z: 100 };  
+  destinos[cuboSE_centro.id] = { x: 0, y: 5, z: 200 };                 // Centro SE a centro SO
+destinos[cuboSE_NE.id] = { x: 300, y: 5, z: 0 };                     // Noreste SE a más noreste
+destinos[cuboSE_NO.id] = { x: 100, y: 5, z: 100 };                   // Noroeste SE a centro SE
+destinos[cuboSE_SE.id] = { x: 300, y: 5, z: 300 };                   // Sureste SE a más sureste
+destinos[cuboSE_SO.id] = { x: 100, y: 5, z: 300 };  
+  destinos[cuboSO_centro.id] = { x: 100, y: 5, z: 100 };                 // Centro SO a centro SE
+destinos[cuboSO_NE.id] = { x: 0, y: 5, z: 200 };                       // Noreste SO a sur de mapa SE
+destinos[cuboSO_NO.id] = { x: -100, y: 5, z: 100 };                    // Noroeste SO a centro SO
+destinos[cuboSO_SE.id] = { x: 0, y: 5, z: 300 };                       // Sureste SO a más sur
+destinos[cuboSO_SO.id] = { x: -300, y: 5, z: 300 };   
 
 function moverSegunCubo(hitCubo) {
   var destino = destinos[hitCubo.id];
