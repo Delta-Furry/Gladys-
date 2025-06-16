@@ -42,14 +42,12 @@
 </head>
 <body>
 
-  <!-- Botón inicial para activar VR -->
   <div id="boton">
     Da clic en + para iniciar VR
-    <p>Recorrido en el mar ¡DISFRUTA!</p>
+    <p>Recorrido en el mar ¡DISFRUTA!1</p>
     <p>(  ) pulsa Esc para salir</p>
   </div>
 
-  <!-- Canvas WebGL -->
   <canvas id="myCanvas"></canvas>
 
   <script type="importmap">
@@ -80,14 +78,19 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x85929E);
+
+    // Desactivar estereoscopía (modo mono)  
     renderer.xr.enabled = true;
     renderer.xr.setReferenceSpaceType('local');
+    renderer.xr.setAnimationLoop(() => {}); // necesario para VRButton
+    VRButton.createButton(renderer).style.display = 'none'; 
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(VRButton.createButton(renderer));
+    renderer.xr.enabled = false; // fuerza render mono cuando entra VR
 
     // Escena y cámara
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 1000);
     camera.position.set(0, 4, 40);
     scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
@@ -97,18 +100,15 @@
     scene.add( ESC03({x:-200,y:10, z:-200}) );
     scene.add( ESC04({x:-200,y:10, z:0  }) );
 
-    // ——— nuevo 1: cubo interactivo cerca del origen ———
+    // InteractionManager y Tween
     const interactionManager = new InteractionManager(renderer, camera, renderer.domElement);
 
+    // ——— cubo rojo cerca del origen ———
     (function(){
       const geo  = new THREE.BoxGeometry(4,4,4);
-      const mat  = new THREE.MeshLambertMaterial({ color: 0xff8000, opacity:0.8, transparent:true });
+      const mat  = new THREE.MeshLambertMaterial({ color: 0xff0000, opacity:0.8, transparent:true });
       const cube = new THREE.Mesh(geo, mat);
-
-      // posición justo delante del origen (donde te pone al entrar en VR)
       cube.position.set(0, 1, -2);
-      cube.castShadow = true;
-
       scene.add(cube);
       interactionManager.add(cube);
 
@@ -121,7 +121,6 @@
         document.body.style.cursor = 'default';
       });
       cube.addEventListener('click', () => {
-        // mueve la cámara de vuelta a (0,4,40)
         const from = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
         const to   = { x: 0, y: 4, z: 40 };
         new TWEEN.Tween(from)
@@ -130,18 +129,17 @@
           .start();
       });
     })();
-    // ——— fin del nuevo ———
+    // ——— fin cubo ———
 
-    // Cruz para centrar la vista
-    const gx  = new THREE.BoxGeometry(0.0075,0.05,0.075);
-    const mat = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
-    const mx1 = new THREE.Mesh(gx, mat);
-    const mx2 = new THREE.Mesh(new THREE.BoxGeometry(0.05,0.0075,0.075), mat);
-    mx1.position.set(0,0,0); mx2.position.set(0,0,0);
+    // Cruz en el centro
+    const gx = new THREE.BoxGeometry(0.0075,0.05,0.075);
+    const matX = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
+    const mx1 = new THREE.Mesh(gx, matX);
+    const mx2 = new THREE.Mesh(new THREE.BoxGeometry(0.05,0.0075,0.075), matX);
     camera.add(mx1, mx2);
     scene.add(camera);
 
-    // Redimensionar
+    // Resize
     window.addEventListener('resize', () => {
       camera.aspect = innerWidth/innerHeight;
       camera.updateProjectionMatrix();
@@ -151,6 +149,7 @@
     // Ocultar botón
     document.getElementById('boton').onclick = () => {
       document.getElementById('boton').style.display = 'none';
+      renderer.xr.enabled = false; // asegurar mono
     };
 
     // Render loop
