@@ -15,24 +15,26 @@
       cursor: pointer; z-index: 10;
     }
     #boton p { font-size: 20px; margin-top: 10px; }
-    canvas { display: block; width:100vw; height:100vh; }
+    canvas { display: block; position: fixed; top: 0; left: 0; width:100vw; height:100vh; }
   </style>
 </head>
 <body>
 
   <div id="boton">
     Da clic en + para iniciar VR
-    <p>Recorrido en el mar ¡DISFRUTA!2</p>
+    <p>Recorrido en el mar ¡DISFRUTA!</p>
     <p>(  ) pulsa Esc para salir</p>
   </div>
+
   <canvas id="myCanvas"></canvas>
 
   <script type="importmap">
   {
     "imports": {
-      "three":          "./js/three.module.js",
-      "three/VRButton": "./js/VRButton.js",
-      "tween":          "./js/tween.module.min.js"
+      "three":             "./js/three.module.js",
+      "three/VRButton":    "./js/VRButton.js",
+      "three/interactive": "./js/three.interactive.js",
+      "tween":             "./js/tween.module.min.js"
     }
   }
   </script>
@@ -40,13 +42,15 @@
   <script type="module">
     import * as THREE from 'three';
     import { VRButton } from 'three/VRButton';
+    import { InteractionManager } from 'three/interactive';
     import { TWEEN } from 'tween';
+
     import ESC01 from "./js/Brenda_PREP.js";
     import ESC02 from "./js/Crist_PREP.js";
     import ESC03 from "./js/Mauricio_PREP.js";
     import ESC04 from "./js/Lyn_PREP.js";
 
-    // Renderer + VRButton
+    // Renderer + VR
     const canvas   = document.getElementById('myCanvas');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -62,71 +66,78 @@
     camera.position.set(0, 4, 40);
     scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
-    // Four scenarios
-    scene.add(ESC01({ x:0,   y:0,  z:0   }));
-    scene.add(ESC02({ x:0,   y:10, z:-200}));
-    scene.add(ESC03({ x:-200,y:10, z:-200}));
-    scene.add(ESC04({ x:-200,y:10, z:0   }));
+    // Tus escenarios
+    scene.add( ESC01({ x:0,   y:0,  z:0   }) );
+    scene.add( ESC02({ x:0,   y:10, z:-200}) );
+    scene.add( ESC03({ x:-200,y:10, z:-200}) );
+    scene.add( ESC04({ x:-200,y:10, z:0   }) );
 
-    // ——— Teleport cubes ———
-    const cubes = [];
+    // InteractionManager + Tween
+    const interactionManager = new InteractionManager(renderer, camera, renderer.domElement);
 
-    function makeCube(pos, color) {
-      const geo = new THREE.BoxGeometry(4,4,4);
-      const mat = new THREE.MeshLambertMaterial({ color, opacity:0.8, transparent:true });
-      const m   = new THREE.Mesh(geo, mat);
-      m.position.set(pos.x, pos.y, pos.z);
-      scene.add(m);
-      cubes.push(m);
-      return m;
-    }
+    // ——— nuevo 1: cubo rojo cerca del origen ———
+    ;(() => {
+      const geo  = new THREE.BoxGeometry(4,4,4);
+      const mat  = new THREE.MeshLambertMaterial({ color: 0xff0000, opacity:0.8, transparent:true });
+      const cube = new THREE.Mesh(geo, mat);
 
-    const cubeA = makeCube({ x:0,  y:12, z:-5 }, 0xff0000);
-    const cubeB = makeCube({ x:30, y:12, z:10 }, 0x0000ff);
+      // posición cerca del punto 0, altura ≈12
+      cube.position.set(0, 12, -5);
+      cube.castShadow = true;
+      scene.add(cube);
+      interactionManager.add(cube);
 
-    // Raycaster & click handler
-    const raycaster = new THREE.Raycaster();
-    const mouse     = new THREE.Vector2();
+      // interacción con three.interactive
+      cube.addEventListener('mouseover', () => {
+        cube.material.opacity = 1;
+        document.body.style.cursor = 'pointer';
+      });
+      cube.addEventListener('mouseout', () => {
+        cube.material.opacity = 0.8;
+        document.body.style.cursor = 'default';
+      });
+      cube.addEventListener('mousedown', () => {
+        cube.scale.set(1.1,1.1,1.1);
+      });
+      cube.addEventListener('mouseup', () => {
+        cube.scale.set(1.0,1.0,1.0);
+      });
+      cube.addEventListener('click', () => {
+        // destino: otro punto del mapa (por ejemplo: 30,12,10)
+        const target = { x:30, y:12, z:10 };
+        const from = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+        new TWEEN.Tween(from)
+          .to(target, 800)
+          .onUpdate(() => camera.position.set(from.x, from.y, from.z))
+          .start();
+      });
+    })();
+    // ——— fin nuevo 1 ———
 
-    window.addEventListener('click', (e) => {
-      mouse.x = (e.clientX / innerWidth) * 2 - 1;
-      mouse.y = -(e.clientY / innerHeight) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-      const hit = raycaster.intersectObjects(cubes, false)[0];
-      if (!hit) return;
-      const dest = (hit.object === cubeA) ? cubeB.position : cubeA.position;
-      const from = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-      new TWEEN.Tween(from)
-        .to({ x: dest.x, y: dest.y, z: dest.z }, 800)
-        .onUpdate(() => camera.position.set(from.x, from.y, from.z))
-        .start();
-    });
-    // ——— end teleport cubes ———
-
-    // Crosshair
-    const crossGeo = new THREE.BoxGeometry(.0075,.05,.075);
-    const crossMat = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
-    const c1 = new THREE.Mesh(crossGeo, crossMat);
-    const c2 = new THREE.Mesh(new THREE.BoxGeometry(.05,.0075,.075), crossMat);
-    c1.position.set(0,0,-1); c2.position.set(0,0,-1);
-    camera.add(c1, c2);
+    // Cruz para centrar
+    const g1 = new THREE.BoxGeometry(.0075,.05,.075);
+    const m1 = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
+    const x1 = new THREE.Mesh(g1,m1), x2 = new THREE.Mesh(new THREE.BoxGeometry(.05,.0075,.075),m1);
+    x1.position.set(0,0,-1); x2.position.set(0,0,-1);
+    camera.add(x1, x2);
     scene.add(camera);
 
     // Resize
     window.addEventListener('resize', () => {
-      camera.aspect = innerWidth/innerHeight;
+      camera.aspect = window.innerWidth/window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Hide start button
+    // Ocultar botón
     document.getElementById('boton').onclick = () => {
       document.getElementById('boton').style.display = 'none';
     };
 
-    // Render loop
+    // Loop de render
     function render() {
       TWEEN.update();
+      interactionManager.update();
       renderer.render(scene, camera);
     }
     renderer.setAnimationLoop(render);
