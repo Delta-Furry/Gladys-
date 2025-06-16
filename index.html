@@ -44,7 +44,7 @@
 
 <div id="boton">
   Da clic en + para iniciar VR
-  <p>Recorrido en el mar ! DISFRUTA</p>
+  <p>Recorrido en el mar ! DISFRUT1A</p>
   <p>(  ) pulsa Esc para salir</p>
 </div>
 
@@ -82,7 +82,7 @@
   const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
   camera.position.set(0, 4, 40);
 
-  const light1 = new THREE.AmbientLight(0xffffff, 0.2);
+  const light1 = new THREE.AmbientLight(0xffffff, 0.8);
   scene.add(light1);
 
   scene.add(ESC01({x:0, y:0, z:0}));
@@ -90,12 +90,16 @@
   scene.add(ESC03({x:-200, y:10, z:-200}));
   scene.add(ESC04({x:-200, y:10, z:0}));
 
-  // --- NUEVO: Cubos teleportadores rojos ---
+  // --- NUEVO: Cubos teleportadores ---
   const teleportTargets = [
-    { position: new THREE.Vector3(0, 4, 40), coords: { x: 0, y: 4, z: 40 } },      
-    { position: new THREE.Vector3(0, 4, -200), coords: { x: 0, y: 4, z: -200 } },  
-    { position: new THREE.Vector3(-200, 4, -200), coords: { x: -200, y: 4, z: -200 } }, 
-    { position: new THREE.Vector3(-200, 4, 0), coords: { x: -200, y: 4, z: 0 } }   
+    {
+      position: new THREE.Vector3(0, 4, -10),
+      coords: { x: -100, y: 4, z: -100 }
+    },
+    {
+      position: new THREE.Vector3(-100, 4, -100),
+      coords: { x: 0, y: 4, z: 40 }
+    }
   ];
 
   teleportTargets.forEach(target => {
@@ -113,10 +117,12 @@
   let lookingAt = null;
   let lookingStartTime = 0;
 
-  // Cruz central (retícula)
-  const materialx = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
-  const cross1 = new THREE.Mesh(new THREE.BoxGeometry(0.0075, 0.05, 0.075), materialx);
-  const cross2 = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.0075, 0.075), materialx);
+  // --- CRUCETA RETÍCULA ---
+  const materialx = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+  const cross1 = new THREE.Mesh(new THREE.BoxGeometry(0.0075, 0.05, 0.01), materialx);
+  const cross2 = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.0075, 0.01), materialx);
+  cross1.position.z = -1; // delante de la cámara
+  cross2.position.z = -1;
   camera.add(cross1, cross2);
   scene.add(camera);
 
@@ -133,7 +139,6 @@
 
   // --- LOOP PRINCIPAL ---
   function render() {
-    // Raycaster dirección desde cámara
     tempMatrix.identity().extractRotation(camera.matrixWorld);
     raycaster.ray.origin.setFromMatrixPosition(camera.matrixWorld);
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
@@ -148,13 +153,13 @@
           lookingStartTime = performance.now();
         } else {
           const now = performance.now();
-          if (now - lookingStartTime > 2000) { // 2 segundos mirando
+          if (now - lookingStartTime > 2000) {
             camera.position.set(
               obj.userData.teleportTo.x,
               obj.userData.teleportTo.y,
               obj.userData.teleportTo.z
             );
-            lookingAt = null; // prevenir loops
+            lookingAt = null;
           }
         }
       }
