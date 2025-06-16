@@ -70,7 +70,10 @@
   import ESC02 from "./js/Crist_PREP.js";
   import ESC03 from "./js/Mauricio_PREP.js";
   import ESC04 from "./js/Lyn_PREP.js";
-
+  import { InteractionManager } from 'three/interactive';
+  import { TWEEN } from './js/tween.module.min.js';
+ 
+  
   // Renderer
   const canvas = document.getElementById('myCanvas');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -103,36 +106,6 @@
   scene.add(ESC03({x:-200, y:10, z:-200}));
   scene.add(ESC04({x:-200, y:10, z:0}));
 //////////////////////nuevo 1
-  // ——————————————————————————————————————
-  // 6. Cubos de teletransporte (4 por cada uno de los 4 escenarios)
-  //    createTeleportCube(posiciónDelCubo, colorHex, posiciónDestinoCamara)
-  //    NOTA: y = 1 para todos los cubos (por encima del suelo)  
-  // ——————————————————————————————————————
-
-  // --- Escenario 1 (centro en 0,0,0) ---
-  createTeleportCube({ x: -10, y: 1, z: -10 }, 0xff0000, { x:   0, y:  4, z:  40 }); // volver “inicio”
-  createTeleportCube({ x:  10, y: 1, z: -10 }, 0xff7f00, { x:   0, y: 14, z: -160 }); // a Escenario 2
-  createTeleportCube({ x:  10, y: 1, z:  10 }, 0xffff00, { x:-200, y: 14, z: -160 }); // a Escenario 3
-  createTeleportCube({ x: -10, y: 1, z:  10 }, 0x00ff00, { x:-200, y: 14, z:   40 }); // a Escenario 4
-
-  // --- Escenario 2 (centro en 0,10,-200) ---
-  createTeleportCube({ x: -10, y: 1, z:-210 }, 0xff0000, { x:   0, y:  4, z:   40 }); // a “inicio”
-  createTeleportCube({ x:  10, y: 1, z:-210 }, 0xff7f00, { x:   0, y: 14, z: -160 }); // a Escenario 2 (self)
-  createTeleportCube({ x:  10, y: 1, z:-190 }, 0xffff00, { x:-200, y: 14, z: -160 }); // a Escenario 3
-  createTeleportCube({ x: -10, y: 1, z:-190 }, 0x00ff00, { x:-200, y: 14, z:   40 }); // a Escenario 4
-
-  // --- Escenario 3 (centro en -200,10,-200) ---
-  createTeleportCube({ x:-210, y: 1, z:-210 }, 0xff0000, { x:   0, y:  4, z:   40 }); // a “inicio”
-  createTeleportCube({ x:-190, y: 1, z:-210 }, 0xff7f00, { x:   0, y: 14, z: -160 }); // a Escenario 2
-  createTeleportCube({ x:-190, y: 1, z:-190 }, 0xffff00, { x:-200, y: 14, z: -160 }); // a Escenario 3 (self)
-  createTeleportCube({ x:-210, y: 1, z:-190 }, 0x00ff00, { x:-200, y: 14, z:   40 }); // a Escenario 4
-
-  // --- Escenario 4 (centro en -200,10,0) ---
-  createTeleportCube({ x:-210, y: 1, z: -10 }, 0xff0000, { x:   0, y:  4, z:   40 }); // a “inicio”
-  createTeleportCube({ x:-190, y: 1, z: -10 }, 0xff7f00, { x:   0, y: 14, z: -160 }); // a Escenario 2
-  createTeleportCube({ x:-190, y: 1, z:  10 }, 0xffff00, { x:-200, y: 14, z: -160 }); // a Escenario 3
-  createTeleportCube({ x:-210, y: 1, z:  10 }, 0x00ff00, { x:-200, y: 14, z:   40 }); // a Escenario 4 (self)
-  // ——————————————————————————————————————
 
 /////////////////////////fin del nuevo
   // Cruz central para posición (Guiar la vista)
