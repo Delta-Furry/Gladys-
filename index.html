@@ -81,26 +81,37 @@ function crearCubo(posicion, color) {
 // Crear cubos
 // Cubos del mapa 3 (SO) — el que estás usando como centro (0,0,0)
 // Cubo central para empezar el recorrido
-var cuboCentro = crearCubo({ x: 0, y: 5, z: 0 }, 0xffff00, "🟨 CUBO CENTRAL");
 
-// Reubicados y ordenados por color raro (más cercanos a la cruz del centro)
-var cuboAzulVerdoso = crearCubo({ x: -50, y: 5, z: -50 }, 0x00cccc, "💙 Azul verdoso");
-var cuboFiusha = crearCubo({ x: 50, y: 5, z: -50 }, 0xff66cc, "🌸 Fiusha");
-var cuboAmarilloCafe = crearCubo({ x: -50, y: 5, z: 50 }, 0xcc9900, "🍂 Amarillo-café");
-var cuboGris = crearCubo({ x: 50, y: 5, z: 50 }, 0xaaaaaa, "⚪ Gris");
-var cuboMorado = crearCubo({ x: -100, y: 5, z: 0 }, 0x6600cc, "🟣 Morado");
-var cuboNaranjaCafe = crearCubo({ x: 100, y: 5, z: 0 }, 0xcc6600, "🍊 Naranja-café");
-var cuboRojoVino = crearCubo({ x: 0, y: 5, z: 100 }, 0x800000, "🍷 Rojo vino");
+// Mapa Central (0,0,0) - Tu posición inicial
+var cuboCentro = crearCubo({ x: 0, y: 5, z: 0 }, 0xffff00, "🟨 CENTRO");
+var cuboCentroN = crearCubo({ x: 0, y: 5, z: -100 }, 0xff0000, "🔴 CENTRO_N");
+var cuboCentroE = crearCubo({ x: 100, y: 5, z: 0 }, 0x00ff00, "🟢 CENTRO_E");
+var cuboCentroS = crearCubo({ x: 0, y: 5, z: 100 }, 0x0000ff, "🔵 CENTRO_S");
+var cuboCentroO = crearCubo({ x: -100, y: 5, z: 0 }, 0xff00ff, "🟣 CENTRO_O");
+
+// Mapa Izquierda (Oeste) - Morado
+var cuboMorado1 = crearCubo({ x: -200, y: 5, z: -50 }, 0x9933ff, "🟣 MORADO1");
+var cuboMorado2 = crearCubo({ x: -200, y: 5, z: 50 }, 0x7a00cc, "🟣 MORADO2");
+var cuboMorado3 = crearCubo({ x: -300, y: 5, z: 0 }, 0x5a0099, "🟣 MORADO3");
+var cuboMorado4 = crearCubo({ x: -200, y: 5, z: 0 }, 0x9933ff, "🟣 MORADO_CENTRO");
+
+// Mapa Frente (Sur) - Azul verdoso y Fucsia
+var cuboAzulV = crearCubo({ x: -50, y: 5, z: -200 }, 0x00cccc, "💠 AZUL VERDOSO");
+var cuboFiusha = crearCubo({ x: 50, y: 5, z: -200 }, 0xff66cc, "🌸 FIUCHA");
+var cuboFrente3 = crearCubo({ x: 0, y: 5, z: -300 }, 0xcc00ff, "🌺 FRENTE3");
+var cuboFrenteC = crearCubo({ x: 0, y: 5, z: -200 }, 0x00aaff, "🌀 FRENTE_CENTRO");
+
+// Mapa Frente-Izquierda (Suroeste) - Resto de colores
+var cuboAmarilloCafe = crearCubo({ x: -250, y: 5, z: -150 }, 0xcc9900, "🟤 AMARILLO CAFÉ");
+var cuboGris = crearCubo({ x: -150, y: 5, z: -250 }, 0xaaaaaa, "⚪ GRIS");
+var cuboNaranjaCafe = crearCubo({ x: -250, y: 5, z: -250 }, 0xcc6600, "🟠 NARANJA CAFÉ");
+var cuboRojoVino = crearCubo({ x: -150, y: 5, z: -150 }, 0x800000, "🍷 ROJO VINO");
 
 cubos.push(
-  cuboCentro,
-  cuboAzulVerdoso,
-  cuboFiusha,
-  cuboAmarilloCafe,
-  cuboGris,
-  cuboMorado,
-  cuboNaranjaCafe,
-  cuboRojoVino
+  cuboCentro, cuboCentroN, cuboCentroE, cuboCentroS, cuboCentroO,
+  cuboMorado1, cuboMorado2, cuboMorado3, cuboMorado4,
+  cuboAzulV, cuboFiusha, cuboFrente3, cuboFrenteC,
+  cuboAmarilloCafe, cuboGris, cuboNaranjaCafe, cuboRojoVino
 );
 
 // Importante: ya que cuboC se mueve a (0,0,-5) cuando clickeas en cuboC, cerramos el ciclo para que M lleve al punto inicial.
@@ -132,14 +143,26 @@ var destinos = {};
 // Destinos para teleport
 
 // Destinos para teleport (ciclo completo)
-destinos[cuboCentro.id] = { x: -50, y: 5, z: -50 };         // Azul Verdoso
-destinos[cuboAzulVerdoso.id] = { x: 50, y: 5, z: -50 };     // Fiusha
-destinos[cuboFiusha.id] = { x: -50, y: 5, z: 50 };          // Amarillo café
-destinos[cuboAmarilloCafe.id] = { x: 50, y: 5, z: 50 };     // Gris
-destinos[cuboGris.id] = { x: -100, y: 5, z: 0 };           // Morado
-destinos[cuboMorado.id] = { x: 100, y: 5, z: 0 };          // Naranja café
-destinos[cuboNaranjaCafe.id] = { x: 0, y: 5, z: 100 };     // Rojo vino
-destinos[cuboRojoVino.id] = { x: 0, y: 5, z: 0 };          // Regresa al centro
+destinos[cuboCentro.id] = cuboCentroN.position;
+destinos[cuboCentroN.id] = cuboCentroE.position;
+destinos[cuboCentroE.id] = cuboCentroS.position;
+destinos[cuboCentroS.id] = cuboCentroO.position;
+destinos[cuboCentroO.id] = cuboMorado1.position;
+
+destinos[cuboMorado1.id] = cuboMorado2.position;
+destinos[cuboMorado2.id] = cuboMorado3.position;
+destinos[cuboMorado3.id] = cuboMorado4.position;
+destinos[cuboMorado4.id] = cuboAzulV.position;
+
+destinos[cuboAzulV.id] = cuboFiusha.position;
+destinos[cuboFiusha.id] = cuboFrente3.position;
+destinos[cuboFrente3.id] = cuboFrenteC.position;
+destinos[cuboFrenteC.id] = cuboAmarilloCafe.position;
+
+destinos[cuboAmarilloCafe.id] = cuboGris.position;
+destinos[cuboGris.id] = cuboNaranjaCafe.position;
+destinos[cuboNaranjaCafe.id] = cuboRojoVino.position;
+destinos[cuboRojoVino.id] = cuboCentro.position;  // Vuelta al inicio
 function moverSegunCubo(hitCubo) {
   var destino = destinos[hitCubo.id];
   destino && moverA(destino.x, destino.y, destino.z);
