@@ -79,32 +79,30 @@ function crearCubo(posicion, color) {
 }
 // Crear cubos
 // Cubos del mapa 3 (SO) — el que estás usando como centro (0,0,0)
-var cuboSO_centro = crearCubo({ x: 0, y: 5, z: 0 }, 0xff0000);           // Centro SO
-var cuboSO_NE = crearCubo({ x: 100, y: 5, z: -100 }, 0x00ff00);          // Esquina NE SO
-var cuboSO_NO = crearCubo({ x: -100, y: 5, z: -100 }, 0x0000ff);         // Esquina NO SO
-var cuboSO_SE = crearCubo({ x: 100, y: 5, z: 100 }, 0xff00ff);           // Esquina SE SO
-var cuboSO_SO = crearCubo({ x: -100, y: 5, z: 100 }, 0xffff00);          // Esquina SO SO
+// Mapa SO (cuadrante inferior izquierdo)
+var cuboSO_A = crearCubo({ x: -100, y: 5, z: 100 }, 0xff0000);   // SO
+var cuboSO_B = crearCubo({ x: 0, y: 5, z: 100 }, 0xff4000);      // SE
+var cuboSO_C = crearCubo({ x: -100, y: 5, z: 0 }, 0xff8000);     // NO
+var cuboSO_D = crearCubo({ x: 0, y: 5, z: 0 }, 0xffbf00);        // NE
 
-// Cubos del mapa 4 (SE)
-var cuboSE_centro = crearCubo({ x: 200, y: 5, z: 0 }, 0xff6600);         // Centro SE
-var cuboSE_NE = crearCubo({ x: 300, y: 5, z: -100 }, 0x00ffff);          // Esquina NE SE
-var cuboSE_NO = crearCubo({ x: 100, y: 5, z: -100 }, 0xffcccc);          // Esquina NO SE
-var cuboSE_SE = crearCubo({ x: 300, y: 5, z: 100 }, 0xcc00cc);           // Esquina SE SE
-var cuboSE_SO = crearCubo({ x: 100, y: 5, z: 100 }, 0x999999);           // Esquina SO SE
+// Mapa SE (cuadrante inferior derecho)
+var cuboSE_A = crearCubo({ x: 0, y: 5, z: 100 }, 0x00ff00);      // SO
+var cuboSE_B = crearCubo({ x: 100, y: 5, z: 100 }, 0x40ff00);    // SE
+var cuboSE_C = crearCubo({ x: 0, y: 5, z: 0 }, 0x80ff00);        // NO
+var cuboSE_D = crearCubo({ x: 100, y: 5, z: 0 }, 0xbfff00);      // NE
 
-// Cubos del mapa 1 (NE)
-var cuboNE_centro = crearCubo({ x: 200, y: 5, z: -200 }, 0x3399ff);      // Centro NE
-var cuboNE_NE = crearCubo({ x: 300, y: 5, z: -300 }, 0x9966cc);          // Esquina NE NE
-var cuboNE_NO = crearCubo({ x: 100, y: 5, z: -300 }, 0x00cc99);          // Esquina NO NE
-var cuboNE_SE = crearCubo({ x: 300, y: 5, z: -100 }, 0xccff66);          // Esquina SE NE
-var cuboNE_SO = crearCubo({ x: 100, y: 5, z: -100 }, 0xff9966);          // Esquina SO NE
+// Mapa NE (cuadrante superior derecho)
+var cuboNE_A = crearCubo({ x: 0, y: 5, z: 0 }, 0x0000ff);        // SO
+var cuboNE_B = crearCubo({ x: 100, y: 5, z: 0 }, 0x0040ff);      // SE
+var cuboNE_C = crearCubo({ x: 0, y: 5, z: -100 }, 0x0080ff);     // NO
+var cuboNE_D = crearCubo({ x: 100, y: 5, z: -100 }, 0x00bfff);   // NE
 
-// Cubos del mapa 2 (NO)
-var cuboNO_centro = crearCubo({ x: 0, y: 5, z: -200 }, 0x996600);        // Centro NO
-var cuboNO_NE = crearCubo({ x: 100, y: 5, z: -300 }, 0x336699);          // Esquina NE NO
-var cuboNO_NO = crearCubo({ x: -100, y: 5, z: -300 }, 0x6633cc);         // Esquina NO NO
-var cuboNO_SE = crearCubo({ x: 100, y: 5, z: -100 }, 0xcc3366);          // Esquina SE NO
-var cuboNO_SO = crearCubo({ x: -100, y: 5, z: -100 }, 0x66ccff);         // Esquina SO NO
+// Mapa NO (cuadrante superior izquierdo)
+var cuboNO_A = crearCubo({ x: -100, y: 5, z: 0 }, 0xffff00);     // SO
+var cuboNO_B = crearCubo({ x: 0, y: 5, z: 0 }, 0xffff40);        // SE
+var cuboNO_C = crearCubo({ x: -100, y: 5, z: -100 }, 0xffff80);  // NO
+var cuboNO_D = crearCubo({ x: 0, y: 5, z: -100 }, 0xffffbf);     // NE
+
 cubos.push(
   cuboSO_centro, cuboSO_NE, cuboSO_NO, cuboSO_SE, cuboSO_SO,
   cuboSE_centro, cuboSE_NE, cuboSE_NO, cuboSE_SE, cuboSE_SO,
