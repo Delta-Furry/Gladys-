@@ -80,31 +80,32 @@ function crearCubo(posicion, color) {
 // Crear cubos
 // Cubos del mapa 3 (SO) — el que estás usando como centro (0,0,0)
 // Crear cubos (4 por mapa)
-var cubo1 = crearCubo({ x: -200, y: 5, z: -200 }, 0xff0000); // Mapa 2 - Esquina
-var cubo2 = crearCubo({ x: -100, y: 5, z: -200 }, 0xff8000); // Mapa 2
-var cubo3 = crearCubo({ x: -100, y: 5, z: -100 }, 0xffff00); // Mapa 2
-var cubo4 = crearCubo({ x: -200, y: 5, z: -100 }, 0x00ff00); // Mapa 2
+// Crear cubos para los 4 mapas en forma de circuito
+var cuboA = crearCubo({ x: 20, y: 5, z: -180 }, 0xff0000);   // Mapa 1 - NO
+var cuboB = crearCubo({ x: 180, y: 5, z: -180 }, 0xff8000);  // Mapa 1 - NE
+var cuboC = crearCubo({ x: 180, y: 5, z: -20 }, 0xffff00);   // Mapa 1 - SE
+var cuboD = crearCubo({ x: 20, y: 5, z: -20 }, 0x00ff00);    // Mapa 1 - SO
 
-var cubo5 = crearCubo({ x: 100, y: 5, z: -200 }, 0x0000ff);  // Mapa 1
-var cubo6 = crearCubo({ x: 200, y: 5, z: -200 }, 0x00ffff);  // Mapa 1
-var cubo7 = crearCubo({ x: 200, y: 5, z: -100 }, 0xff00ff);  // Mapa 1
-var cubo8 = crearCubo({ x: 100, y: 5, z: -100 }, 0x800080);  // Mapa 1
+var cuboE = crearCubo({ x: -180, y: 5, z: -180 }, 0x00ffff); // Mapa 2 - NO
+var cuboF = crearCubo({ x: -20, y: 5, z: -180 }, 0x0080ff);  // Mapa 2 - NE
+var cuboG = crearCubo({ x: -20, y: 5, z: -20 }, 0x0000ff);   // Mapa 2 - SE
+var cuboH = crearCubo({ x: -180, y: 5, z: -20 }, 0x8000ff);  // Mapa 2 - SO
 
-var cubo9  = crearCubo({ x: -200, y: 5, z: 100 }, 0x008000); // Mapa 3
-var cubo10 = crearCubo({ x: -100, y: 5, z: 100 }, 0x804000); // Mapa 3
-var cubo11 = crearCubo({ x: -100, y: 5, z: 200 }, 0x808000); // Mapa 3
-var cubo12 = crearCubo({ x: -200, y: 5, z: 200 }, 0x999999); // Mapa 3
+var cuboI = crearCubo({ x: -180, y: 5, z: 20 }, 0xff00ff);   // Mapa 3 - NO
+var cuboJ = crearCubo({ x: -20, y: 5, z: 20 }, 0xff0080);    // Mapa 3 - NE
+var cuboK = crearCubo({ x: -20, y: 5, z: 180 }, 0xc0c0c0);   // Mapa 3 - SE
+var cuboL = crearCubo({ x: -180, y: 5, z: 180 }, 0x808080);  // Mapa 3 - SO
 
-var cubo13 = crearCubo({ x: 100, y: 5, z: 100 }, 0x3399ff);  // Mapa 4
-var cubo14 = crearCubo({ x: 200, y: 5, z: 100 }, 0x9966cc);  // Mapa 4
-var cubo15 = crearCubo({ x: 200, y: 5, z: 200 }, 0xffcc00);  // Mapa 4
-var cubo16 = crearCubo({ x: 100, y: 5, z: 200 }, 0x993333);  // Mapa 4
+var cuboM = crearCubo({ x: 20, y: 5, z: 20 }, 0x804000);     // Mapa 4 - NO
+var cuboN = crearCubo({ x: 180, y: 5, z: 20 }, 0xffa500);    // Mapa 4 - NE
+var cuboO = crearCubo({ x: 180, y: 5, z: 180 }, 0xffff80);   // Mapa 4 - SE
+var cuboP = crearCubo({ x: 20, y: 5, z: 180 }, 0x80ff80);    // Mapa 4 - SO
 
 cubos.push(
-  cubo1, cubo2, cubo3, cubo4,
-  cubo5, cubo6, cubo7, cubo8,
-  cubo9, cubo10, cubo11, cubo12,
-  cubo13, cubo14, cubo15, cubo16
+  cuboA, cuboB, cuboC, cuboD,
+  cuboE, cuboF, cuboG, cuboH,
+  cuboI, cuboJ, cuboK, cuboL,
+  cuboM, cuboN, cuboO, cuboP
 );
 
 // Importante: ya que cuboC se mueve a (0,0,-5) cuando clickeas en cuboC, cerramos el ciclo para que M lleve al punto inicial.
@@ -135,26 +136,26 @@ function moverA(x, y, z) {
 var destinos = {};
 // Destinos para teleport
 
-// 📌 Destinos (uno tras otro, en orden de recorrido)
-destinos[cubo1.id] = { x: -100, y: 5, z: -200 };
-destinos[cubo2.id] = { x: -100, y: 5, z: -100 };
-destinos[cubo3.id] = { x: -200, y: 5, z: -100 };
-destinos[cubo4.id] = { x: 100, y: 5, z: -200 };
+// 📌 Teleport: cada cubo lleva al siguiente en orden
+destinos[cuboA.id] = { x: 185, y: 5, z: -180 };
+destinos[cuboB.id] = { x: 180, y: 5, z: -15 };
+destinos[cuboC.id] = { x: 20, y: 5, z: -15 };
+destinos[cuboD.id] = { x: -175, y: 5, z: -180 };
 
-destinos[cubo5.id] = { x: 200, y: 5, z: -200 };
-destinos[cubo6.id] = { x: 200, y: 5, z: -100 };
-destinos[cubo7.id] = { x: 100, y: 5, z: -100 };
-destinos[cubo8.id] = { x: -200, y: 5, z: 100 };
+destinos[cuboE.id] = { x: -15, y: 5, z: -180 };
+destinos[cuboF.id] = { x: -15, y: 5, z: -15 };
+destinos[cuboG.id] = { x: -180, y: 5, z: -15 };
+destinos[cuboH.id] = { x: -180, y: 5, z: 15 };
 
-destinos[cubo9.id]  = { x: -100, y: 5, z: 100 };
-destinos[cubo10.id] = { x: -100, y: 5, z: 200 };
-destinos[cubo11.id] = { x: -200, y: 5, z: 200 };
-destinos[cubo12.id] = { x: 100, y: 5, z: 100 };
+destinos[cuboI.id] = { x: -15, y: 5, z: 20 };
+destinos[cuboJ.id] = { x: -15, y: 5, z: 185 };
+destinos[cuboK.id] = { x: -180, y: 5, z: 185 };
+destinos[cuboL.id] = { x: 20, y: 5, z: 20 };
 
-destinos[cubo13.id] = { x: 200, y: 5, z: 100 };
-destinos[cubo14.id] = { x: 200, y: 5, z: 200 };
-destinos[cubo15.id] = { x: 100, y: 5, z: 200 };
-destinos[cubo16.id] = { x: -200, y: 5, z: -200 }; // vuelta al inicio
+destinos[cuboM.id] = { x: 185, y: 5, z: 20 };
+destinos[cuboN.id] = { x: 185, y: 5, z: 185 };
+destinos[cuboO.id] = { x: 20, y: 5, z: 185 };
+destinos[cuboP.id] = { x: 0, y: 5, z: 0 }; // Vuelve al centro si quieres
 function moverSegunCubo(hitCubo) {
   var destino = destinos[hitCubo.id];
   destino && moverA(destino.x, destino.y, destino.z);
